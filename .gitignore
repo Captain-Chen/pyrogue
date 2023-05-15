@@ -1,0 +1,4 @@
+# ignore the following files and folders
+.vscode
+rldev
+__pycache__

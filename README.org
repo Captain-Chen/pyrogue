@@ -1,0 +1,8 @@
+* What is this?
+A simple roguelike that uses a [[https://github.com/libtcod/python-tcod][Python port]] of the [[https://github.com/libtcod/libtcod][libtcod library]]. \\
+This follows the [[https://rogueliketutorials.com/tutorials/tcod/v2][Yet Another Roguelike Tutorial]]
+
+* How do I install and run this?
+1. Clone the project using =git clone https://github.com/captain-chen/pyrogue.git=
+2. Install the ~requirements.txt~ file with =python pip install -r requirements.txt=
+3. Run ~main.py~
