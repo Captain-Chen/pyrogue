@@ -2,7 +2,7 @@ import tcod
 import os
 
 from src.engine import Engine
-from src.map import Map
+from src.procgen import generate_dungeon
 from src.input_handlers import EventHandler
 from src.entity import Entity
 
@@ -22,7 +22,14 @@ def main():
     player = Entity(int(screen_width / 2), int(screen_height / 2), '@', (255, 255, 255))
     npc = Entity(int(screen_width / 2) - 5, int(screen_height / 2), "S", (255, 255, 0))
     entities = {player, npc}
-    game_map = Map(map_width, map_height)
+    game_map = generate_dungeon(
+        max_rooms=30,
+        min_size=6,
+        max_size=10,
+        map_width=map_width,
+        map_height=map_height,
+        player=player
+        )
 
     engine = Engine(entities, EventHandler(), game_map, player)
 
