@@ -6,6 +6,7 @@ import tcod
 
 from .map import Map
 from . import tile_types
+from . import entity_factory
 
 if TYPE_CHECKING:
     from .entity import Entity
@@ -37,9 +38,10 @@ def generate_dungeon(
         max_size: int,
         map_width: int,
         map_height: int,
+        max_monsters_per_room: int,
         player: Entity,
         ) -> Map:
-    dungeon = Map(map_width, map_height)
+    dungeon = Map(map_width, map_height, entities=[player])
 
     rooms: List[RectangularRoom] = []
 
@@ -65,9 +67,24 @@ def generate_dungeon(
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
 
+        spawn_entities(new_room, dungeon, max_monsters_per_room)
+
         rooms.append(new_room)
 
     return dungeon
+
+def spawn_entities(room: RectangularRoom, dungeon: Map, max_monsters: int):
+    num_monsters = random.randint(0, max_monsters)
+
+    for _ in range(num_monsters):
+        x = random.randint(room.x1 + 1, room.x2 - 1)
+        y = random.randint(room.y1 + 1, room.y2 - 1)
+
+        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
+            if random.random() < 0.8:
+                entity_factory.orc.spawn(dungeon, x, y)
+            else:
+                entity_factory.troll.spawn(dungeon, x, y)
 
 def tunnel_between(
         start: Tuple[int, int], end: Tuple[int, int]
