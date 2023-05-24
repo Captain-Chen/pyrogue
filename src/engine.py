@@ -14,6 +14,10 @@ class Engine:
         self.game_map = game_map
         self.update_fov() # call method at initialization so FoV is created at start
 
+    def handle_enemy_turns(self):
+        for entity in self.game_map.entities - {self.player}:
+            pass
+
     def handle_events(self, events: Iterable[Any]):
         for event in events:
             action = self.event_handler.dispatch(event)

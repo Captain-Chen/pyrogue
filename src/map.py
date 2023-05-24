@@ -24,7 +24,7 @@ class Map:
             if entity.blocks_movement and entity.x == loc_x and entity.y == loc_y:
                 return entity
             
-            return None
+        return None
 
     def render(self, console: Console):
         console.tiles_rgb[0:self.width, 0:self.height] = np.select(

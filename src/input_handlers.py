@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import tcod.event
-from .actions import Action, Escape, Move
+from .actions import Action, Escape, Bump
 
 class EventHandler(tcod.event.EventDispatch[Action]):
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
@@ -11,13 +11,13 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         key = event.sym
         match key:
             case tcod.event.K_UP:
-                action = Move(0, -1)
+                action = Bump(0, -1)
             case tcod.event.K_DOWN:
-                action = Move(0, 1)
+                action = Bump(0, 1)
             case tcod.event.K_LEFT:
-                action = Move(-1, 0)
+                action = Bump(-1, 0)
             case tcod.event.K_RIGHT:
-                action = Move(1, 0)
+                action = Bump(1, 0)
             case tcod.event.K_ESCAPE:
                 action = Escape()
             
