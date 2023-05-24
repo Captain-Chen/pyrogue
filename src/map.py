@@ -7,10 +7,12 @@ from tcod.console import Console
 from . import tile_types
 
 if TYPE_CHECKING:
+    from .engine import Engine
     from .entity import Entity
 
 class Map:
-    def __init__(self, width: int, height: int, entities: Iterable[Entity] = ()):
+    def __init__(self, engine: Engine, width: int, height: int, entities: Iterable[Entity] = ()):
+        self.engine = engine
         self.width = width
         self.height = height
         self.entities = set(entities)
@@ -27,7 +29,7 @@ class Map:
         return None
 
     def render(self, console: Console):
-        console.tiles_rgb[0:self.width, 0:self.height] = np.select(
+        console.tiles_rgb[0: self.width, 0: self.height] = np.select(
             condlist=[self.visible, self.explored],
             choicelist=[self.tiles["light"], self.tiles["dark"]],
             default=tile_types.FOG

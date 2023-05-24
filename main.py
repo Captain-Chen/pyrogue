@@ -21,17 +21,17 @@ def main():
     )
 
     player = copy.deepcopy(entity_factory.player)
-    game_map = generate_dungeon(
+    engine = Engine(player)
+    engine.game_map = generate_dungeon(
         max_rooms=30,
         min_size=6,
         max_size=10,
         map_width=map_width,
         map_height=map_height,
         max_monsters_per_room=2,
-        player=player
+        engine=engine
         )
-
-    engine = Engine(EventHandler(), game_map, player)
+    engine.update_fov()
 
     with tcod.context.new_terminal(
         screen_width,
@@ -45,8 +45,7 @@ def main():
         # main game loop
         while True:
             engine.render(rc, context)
-            events = tcod.event.wait()
-            engine.handle_events(events)
+            engine.event_handler.handle_events()
                 
 if __name__ == "__main__":
     main()

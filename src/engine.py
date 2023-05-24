@@ -1,32 +1,27 @@
-from typing import Iterable, Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
 
-from .entity import Entity
 from .input_handlers import EventHandler
-from .map import Map
+
+if TYPE_CHECKING:
+    from .entity import Entity
+    from .map import Map
 
 class Engine:
-    def __init__(self, event_handler: EventHandler, game_map: Map, player: Entity):
-        self.event_handler = event_handler
+    game_map: Map
+
+    def __init__(self, player: Entity):
+        self.event_handler: EventHandler = EventHandler(self)
         self.player = player
-        self.game_map = game_map
-        self.update_fov() # call method at initialization so FoV is created at start
 
     def handle_enemy_turns(self):
         for entity in self.game_map.entities - {self.player}:
             pass
-
-    def handle_events(self, events: Iterable[Any]):
-        for event in events:
-            action = self.event_handler.dispatch(event)
-
-            if action is None:
-                continue
-
-            action.perform(self, self.player)
-            self.update_fov() # Update the FOV before the next action
 
     def update_fov(self):
         self.game_map.visible[:] = compute_fov(
