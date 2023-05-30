@@ -12,7 +12,7 @@ class Action:
     
     @property
     def engine(self) -> Engine:
-        return self.entity.gamemap.engine
+        return self.entity.game_map.engine
 
     def perform(self):
         raise NotImplementedError()
@@ -38,6 +38,10 @@ class DirectedAction(Action):
 class Escape(Action):
     def perform(self):
         raise SystemExit()
+    
+class Wait(Action):
+    def perform(self):
+        pass
 
 class Move(DirectedAction):
     def perform(self):

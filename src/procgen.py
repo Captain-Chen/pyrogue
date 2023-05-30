@@ -82,10 +82,7 @@ def spawn_entities(room: RectangularRoom, dungeon: Map, max_monsters: int):
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            if random.random() < 0.8:
-                entity_factory.orc.spawn(dungeon, x, y)
-            else:
-                entity_factory.troll.spawn(dungeon, x, y)
+            entity_factory.rat.spawn(dungeon, x, y)
 
 def tunnel_between(
         start: Tuple[int, int], end: Tuple[int, int]

@@ -3,10 +3,36 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 import tcod.event
 
-from .actions import Action, Escape, Bump
+from .actions import Action, Escape, Bump, Wait
 
 if TYPE_CHECKING:
     from .engine import Engine
+
+MOVEMENT_KEYS = {
+    # Arrow keys
+    tcod.event.K_UP: (0, -1),
+    tcod.event.K_DOWN: (0, 1),
+    tcod.event.K_LEFT: (-1, 0),
+    tcod.event.K_RIGHT: (1, 0),
+    tcod.event.K_HOME: (-1, -1),
+    tcod.event.K_END: (-1, 1),
+    tcod.event.K_PAGEUP: (1, -1),
+    tcod.event.K_PAGEDOWN: (1, 1),
+    # Numpad keys
+    tcod.event.K_KP_1: (-1, 1),
+    tcod.event.K_KP_2: (0, 1),
+    tcod.event.K_KP_3: (1, 1),
+    tcod.event.K_KP_4: (-1, 0),
+    tcod.event.K_KP_6: (1, 0),
+    tcod.event.K_KP_7: (-1, -1),
+    tcod.event.K_KP_8: (0, -1),
+    tcod.event.K_KP_9: (1, -1),
+}
+
+WAIT_KEYS = {
+    tcod.event.K_PERIOD,
+    tcod.event.K_KP_5,
+}
 
 class EventHandler(tcod.event.EventDispatch[Action]):
     def __init__(self, engine: Engine):
@@ -31,17 +57,13 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         action: Optional[Action] = None
         key = event.sym
         player = self.engine.player
-
-        match key:
-            case tcod.event.K_UP:
-                action = Bump(player, 0, -1)
-            case tcod.event.K_DOWN:
-                action = Bump(player, 0, 1)
-            case tcod.event.K_LEFT:
-                action = Bump(player, -1, 0)
-            case tcod.event.K_RIGHT:
-                action = Bump(player, 1, 0)
-            case tcod.event.K_ESCAPE:
-                action = Escape(player)
-            
+              
+        if key in MOVEMENT_KEYS:
+            dx, dy = MOVEMENT_KEYS[key]
+            action = Bump(player, dx, dy)
+        elif key in WAIT_KEYS:
+            action = Wait(player)
+        elif key == tcod.event.KeySym.ESCAPE:
+            action = Escape(player)
+   
         return action

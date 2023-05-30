@@ -21,7 +21,8 @@ class Engine:
 
     def handle_enemy_turns(self):
         for entity in self.game_map.entities - {self.player}:
-            pass
+            if entity.ai:
+                entity.ai.perform()
 
     def update_fov(self):
         self.game_map.visible[:] = compute_fov(
