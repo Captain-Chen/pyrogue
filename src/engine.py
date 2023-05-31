@@ -9,13 +9,13 @@ from tcod.map import compute_fov
 from .input_handlers import EventHandler
 
 if TYPE_CHECKING:
-    from .entity import Entity
+    from .entity import Actor
     from .map import Map
 
 class Engine:
     game_map: Map
 
-    def __init__(self, player: Entity):
+    def __init__(self, player: Actor):
         self.event_handler: EventHandler = EventHandler(self)
         self.player = player
 
@@ -34,5 +34,6 @@ class Engine:
             
     def render(self, console: Console, context: Context):
         self.game_map.render(console)
+        console.print(1, 47, string=f"Hit Points: {self.player.health.hp}/{self.player.health.max_hp}")
         context.present(console)
         console.clear()

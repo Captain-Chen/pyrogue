@@ -80,6 +80,6 @@ class Actor(Entity):
         self.health = health
         self.health.entity = self
 
-        @property
-        def is_alive(self) -> bool:
-            return bool(self.ai)
+    @property
+    def is_alive(self) -> bool:
+        return bool(self.ai)

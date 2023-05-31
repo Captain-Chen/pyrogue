@@ -57,6 +57,10 @@ class EventHandler(tcod.event.EventDispatch[Action]):
         action: Optional[Action] = None
         key = event.sym
         player = self.engine.player
+
+        if not player.is_alive:
+            print("You have died!")
+            return
               
         if key in MOVEMENT_KEYS:
             dx, dy = MOVEMENT_KEYS[key]

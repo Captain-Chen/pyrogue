@@ -1,12 +1,13 @@
 from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
+import random
 
 if TYPE_CHECKING:
     from .engine import Engine
-    from .entity import Entity
+    from .entity import Entity, Actor
 
 class Action:
-    def __init__(self, entity: Entity):
+    def __init__(self, entity: Actor):
         super().__init__()
         self.entity = entity
     
@@ -18,7 +19,7 @@ class Action:
         raise NotImplementedError()
     
 class DirectedAction(Action):
-    def __init__(self, entity: Entity, dx: int, dy: int):
+    def __init__(self, entity: Actor, dx: int, dy: int):
         super().__init__(entity)
 
         self.dx = dx
@@ -26,11 +27,18 @@ class DirectedAction(Action):
 
     @property
     def dest_xy(self) -> Tuple[int, int]:
+        """Return destination coordinates"""
         return self.entity.x + self.dx, self.entity.y + self.dy
     
     @property
     def blocking_entity(self) -> Optional[Entity]:
+        """Return blocking entity at this location"""
         return self.engine.game_map.get_entity_at_loc(*self.dest_xy)
+    
+    @property
+    def target_actor(self) -> Optional[Actor]:
+        """Return actor at this destination"""
+        return self.engine.game_map.get_actor_at_loc(*self.dest_xy)
 
     def perform(self, engine: Engine, entity: Entity):
         raise NotImplementedError()
@@ -61,11 +69,23 @@ class Move(DirectedAction):
 
 class Melee(DirectedAction):
     def perform(self):
-        target = self.blocking_entity
+        target = self.target_actor
         if not target:
             return # Nothing at location to attack
         
-        print(f"You strike the {target.name} with your fist.")
+        attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}!"
+        attack_dmg = random.randint(3, 10)
+
+        print(f"{attack_desc} {target.name} takes {attack_dmg} points of damage.")
+        target.health.hp -= attack_dmg
+
+        if target.health.hp <= 0:
+            print(f"{target.name} was defeated.")
+            target.ai = None
+            target.blocks_movement = False
+            target.char = "%"
+            target.color = (191, 0, 0)
+            target.name = f"remains of {target.name}"
 
 class Bump(DirectedAction):
     def perform(self):
